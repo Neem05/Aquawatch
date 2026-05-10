@@ -49,7 +49,7 @@ const DataUpload = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:5000/api/analyze/upload', formData, {
+      const response = await axios.post('http://localhost:8000/api/analyze/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`
@@ -81,7 +81,7 @@ const DataUpload = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:5000/api/analyze/single', sampleData, {
+      const response = await axios.post('http://localhost:8000/api/analyze/single', sampleData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

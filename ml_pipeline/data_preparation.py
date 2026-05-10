@@ -8,9 +8,9 @@ os.makedirs("data", exist_ok=True)
 print("Loading datasets...")
 
 # Update paths to look in data folder
-file_swamp = "data/nsv-2007-2025-wq-swamp-data-qaqc-basic.xlsx"
-file_coast = "data/nsv-coast-2016-2021-wq-data-for-rci.xlsx"
-file_inland = "data/nsv-inland-2016-2021-wq-data-for-rc.xlsx"
+file_swamp = "./data/nsw-2007-2025-wq-swamp-data-qaqc-basic.xlsx"
+file_coast = "./data/nsw-coast-2016-2021-wq-data-for-rci.xlsx"
+file_inland = "./data/nsw-inland-2016-2021-wq-data-for-rci.xlsx"
 
 # 🔹 Load datasets
 df_swamp = pd.read_excel(file_swamp, sheet_name='2007_2025')

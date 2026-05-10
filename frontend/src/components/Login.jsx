@@ -14,7 +14,7 @@ const Login = ({ setIsAuthenticated }) => {
     setLoading(true);
     
     try {
-      const response = await axios.post('http://localhost:5000/api/login', {
+      const response = await axios.post('http://localhost:8000/api/login', {
         email,
         password
       });
@@ -93,11 +93,7 @@ const Login = ({ setIsAuthenticated }) => {
         </form>
 
         {/* Demo Credentials */}
-        <div className="mt-6 pt-6 border-t border-gray-700 text-center">
-          <p className="text-gray-400 text-sm">Demo Credentials:</p>
-          <p className="text-gray-500 text-xs mt-2">admin@aquawatch.com / admin123</p>
-          <p className="text-gray-500 text-xs">user@aquawatch.com / user123</p>
-        </div>
+        
       </div>
     </div>
   );

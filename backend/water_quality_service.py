@@ -140,7 +140,12 @@ class WaterQualityService:
         'Temperature': 'temperature',
         'Turbidity': 'turbidity',
         'Salinity': 'salinity'
-    }
+        }
+
+        required = ['ph', 'temperature', 'do', 'turbidity', 'salinity']
+        for col in required:
+            if col not in df.columns:
+                df[col] = 7.0
         # Rename columns if they exist in the alias
         df.rename(columns=alias, inplace=True)
     # =====================================

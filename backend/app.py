@@ -8,8 +8,16 @@ import os
 from datetime import datetime
 import uuid
 import json
+import firebase_admin
+from firebase_admin import credentials, firestore
+
 
 app = Flask(__name__)
+# Firebase Initialization
+cred = credentials.Certificate("serviceAcckey.json")
+firebase_admin.initialize_app(cred)
+
+db = firestore.client()
 CORS(app, origins=["http://localhost:3000", "http://localhost:3001"])
 
 # JWT Configuration
@@ -22,6 +30,7 @@ app.register_blueprint(auth_bp)
 # Store analysis results (in production, use database)
 analysis_results = {}
 uploaded_files = {}
+
 
 @app.route('/api/dashboard/stats', methods=['GET'])
 @jwt_required()
@@ -83,18 +92,30 @@ def analyze_upload():
     # Save file temporarily
     file_ext = file.filename.split('.')[-1]
     file_id = str(uuid.uuid4())
-    file_path = f"/tmp/{file_id}.{file_ext}"
+    temp_dir = "temp_uploads"
+
+    os.makedirs(temp_dir, exist_ok=True)
+
+    file_path = os.path.join(temp_dir, f"{file_id}.{file_ext}")
     file.save(file_path)
     
     # Process based on file type
     try:
         if file_ext in ['csv', 'xlsx', 'xls']:
             results = service.process_csv_data(file_path)
+            analysis_id = str(uuid.uuid4())
+            db.collection("water_analysis").document(analysis_id).set({
+            "analysis_id": analysis_id,
+            "filename": file.filename,
+            "uploaded_at": datetime.now().isoformat(),
+            "user": get_jwt_identity(),
+            "results": results
+        })
         else:
             return jsonify({'error': 'Unsupported file format'}), 400
         
         # Store results
-        analysis_id = str(uuid.uuid4())
+        
         uploaded_files[analysis_id] = {
             'filename': file.filename,
             'results': results,
@@ -115,6 +136,21 @@ def analyze_upload():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+@app.route('/api/firebase/history', methods=['GET'])
+@jwt_required()
+def firebase_history():
+
+    docs = db.collection("water_analysis")\
+        .order_by("uploaded_at")\
+        .stream()
+
+    history = []
+
+    for doc in docs:
+        history.append(doc.to_dict())
+
+    return jsonify(history)
 
 @app.route('/api/results/<analysis_id>', methods=['GET'])
 @jwt_required()
