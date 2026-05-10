@@ -2,13 +2,21 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# Copy requirements from root (where it is)
 COPY requirements.txt .
+
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+# Copy app.py from backend folder
+COPY backend/app.py .
 
+# Copy any other backend files if needed
+# COPY backend/other_files.py . (if any)
+
+# Set environment variables
 ENV PORT=8080
-ENV PROJECT_ID=cloud-project-74451
-ENV LOCATION=us-central1
+ENV PYTHONUNBUFFERED=1
 
-CMD exec gunicorn --bind :$PORT --workers 2 --threads 8 --timeout 0 app:app
+# Run the application
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 app:app
