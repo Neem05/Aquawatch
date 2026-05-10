@@ -187,6 +187,27 @@ def export_results(analysis_id):
         download_name=f"water_quality_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
         mimetype='text/csv'
     )
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "healthy", "timestamp": datetime.now().isoformat()}), 200
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+    
+    # Simple user check (you can expand this)
+    if email == "admin@aquawatch.com" and password == "admin123":
+        from flask_jwt_extended import create_access_token
+        access_token = create_access_token(identity=email)
+        return jsonify({
+            "success": True,
+            "access_token": access_token,
+            "user": {"email": email, "name": "Administrator", "role": "admin"}
+        }), 200
+    
+    return jsonify({"success": False, "message": "Invalid credentials"}), 401
 
 @app.route('/api/history', methods=['GET'])
 @jwt_required()
