@@ -14,8 +14,7 @@ from firebase_admin import credentials, firestore
 
 app = Flask(__name__)
 # Firebase Initialization
-cred = credentials.Certificate("serviceAcckey.json")
-firebase_admin.initialize_app(cred)
+firebase_admin.initialize_app()
 
 db = firestore.client()
 CORS(app, origins=["http://localhost:3000", "http://localhost:3001"])
@@ -30,6 +29,11 @@ app.register_blueprint(auth_bp)
 # Store analysis results (in production, use database)
 analysis_results = {}
 uploaded_files = {}
+@app.route("/")
+def home():
+    return jsonify({
+        "message": "AquaWatch API Running Successfully"
+    }), 200
 
 
 @app.route('/api/dashboard/stats', methods=['GET'])
