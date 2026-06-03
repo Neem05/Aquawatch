@@ -6,12 +6,6 @@ env/
 cloud_env/
 *.pyc
 
-# Models (large files – optional, if you want to share models, remove these lines)
-*.h5
-*.keras
-*.pkl
-*.joblib
-
 # Data (optional – if data is large, you can skip)
 *.csv
 *.xlsx
